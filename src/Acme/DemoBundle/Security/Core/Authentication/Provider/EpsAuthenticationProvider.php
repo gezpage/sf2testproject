@@ -13,6 +13,11 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authentication\Provider\UserAuthenticationProvider;
 use Acme\DemoBundle\Service\Service;
 
+/**
+ * EpsAuthenticationProvider
+ *
+ * @see UserAuthenticationProvider
+ */
 class EpsAuthenticationProvider extends UserAuthenticationProvider
 {
     private $encoderFactory;
@@ -20,12 +25,12 @@ class EpsAuthenticationProvider extends UserAuthenticationProvider
     private $service;
 
     /**
-     * @param Service $service
+     * @param Service                                                     $service
      * @param \Symfony\Component\Security\Core\User\UserProviderInterface $userProvider
-     * @param UserCheckerInterface $userChecker
-     * @param $providerKey
-     * @param EncoderFactoryInterface $encoderFactory
-     * @param bool $hideUserNotFoundExceptions
+     * @param UserCheckerInterface                                        $userChecker
+     * @param mixed                                                       $providerKey
+     * @param EncoderFactoryInterface                                     $encoderFactory
+     * @param bool                                                        $hideUserNotFoundExceptions
      */
     public function __construct(Service $service, UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions = true)
     {
@@ -78,7 +83,7 @@ class EpsAuthenticationProvider extends UserAuthenticationProvider
         } catch (UsernameNotFoundException $notFound) {
             throw $notFound;
         } catch (\Exception $repositoryProblem) {
-            throw new AuthenticationServiceException($repositoryProblem->getMessage(), $token, 0, $repositoryProblem);
+            throw new AuthenticationServiceException($repositoryProblem->getMessage(), 0, $repositoryProblem);
         }
     }
 }
