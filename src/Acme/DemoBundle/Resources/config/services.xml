@@ -4,6 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="security.authentication.provider.acme_service.class">Acme\DemoBundle\Security\Core\Authentication\Provider\EpsAuthenticationProvider</parameter>
+        <parameter key="security.user.provider.acme.service.class">Acme\DemoBundle\Security\Core\User\WebserviceUserProvider</parameter>
+        <parameter key="acme.service.class">Acme\DemoBundle\Service\Service</parameter>
+    </parameters>
+
     <services>
         <service id="twig.extension.acme.demo" class="Acme\DemoBundle\Twig\Extension\DemoExtension" public="false">
             <tag name="twig.extension" />
@@ -14,5 +20,23 @@
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
             <argument type="service" id="twig.extension.acme.demo" />
         </service>
+
+        <service id="acme_demo_webservice" class="%acme.service.class%">
+        </service>
+
+        <service id="acme_demo_user_provider" class="%security.user.provider.acme.service.class%">
+            <argument type="service" id="acme_demo_webservice" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+
+        <service id="security.authentication_provider.acme_demo_webservice" class="%security.authentication.provider.acme_service.class%" abstract="true" public="false">
+            <argument type="service" id="acme_demo_webservice" />
+            <argument /> <!-- User Provider -->
+            <argument type="service" id="security.user_checker" />
+            <argument /> <!-- Provider-shared Key -->
+            <argument type="service" id="security.encoder_factory" />
+            <argument>%security.authentication.hide_user_not_found%</argument>
+        </service>
+
     </services>
 </container>
